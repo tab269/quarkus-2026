@@ -1,15 +1,30 @@
 # Aufgaben
-## Erste Schritte mit einem REST-Endpunkt
-1. Starte die Quarkus-App auf der Kommandozeile bzw. Konsole `./mvnw compile quarkus:dev`.
-2. Besuche mit einem Browser [http://localhost:8080/](http://localhost:8080/).
-3. Passe den ausgegebenen Text in der `GreetingResource` an, sodass Dein Vorname darin vorkommt.
-4. Ändere den Pfad des Endpunktes von `/hello` zu `/hello-name`. Überprüfe, dass unter `/hello` kein Dienst mehr
-   erreichbar ist dafür unter `/hello-name`.
+Implementiere einen (Micro-)Service _Orders_, der Bestellungen verwalten kann.
+Gehe dabei inkrementell vor und beginne mit einer _REST-API_.
+Aktuell braucht es noch keine Datenbank zum Persistieren.
+Für den Moment reicht eine Map als (flüchtiger) Datenspeicher.
 
-## DEV UI
-Mache Dich mit der DEV UI der Anwendung vertraut, indem Du den `VISIT THE DEV UI`-Button klickst oder
-   [http://localhost:8080/q/dev-ui/](http://localhost:8080/q/dev-ui/) besuchst.
+## RQ1: Bestellungen anzeigen
+- _Beschreibung_: Der Anwender kann alle existierenden Bestellungen anzeigen.
+- _Endpunkt_: `GET` auf `/orders`
+- _Eingabedaten_: `keine`
+- _Ausgabedaten_: Die bisher angelegten Bestellungen werden als (ggf. leere) Liste nacheinander ausgegeben.
+  Eine Bestellung (`order`) hat die folgenden Felder:
+  - `orderId`
+  - `customerLastname`
+  - `customerFirstname`
+  - `itemDescription`
+  - `amount`
 
-## Richte Deine IDE ein (optional)
-Wenn Du Dir das Leben leichter machen willst, richte Deine IDE ein, indem Du der Anleitung _Set up your IDE_ rechts auf
-der Welcome-Seite folgst und die Quarkus Tools installierst.
+## RQ2: Bestellung aufgeben
+- _Beschreibung_: Der Anwender kann eine neue Bestellung anlegen.
+- _Endpunkt_: `POST` auf `/orders`
+- _Eingabedaten_: Felder einer Bestellung (ohne `orderId`)
+- _Ausgabedaten_: Die angelegte Bestellung wird mit einer vom System generierten `orderId` quittiert.
+
+## RQ3: Einzelne Bestellung anzeigen
+- _Beschreibung_: Der Anwender kann eine bestimmte Bestellung anzeigen.
+- _Endpunkt_: `GET` auf `/orders/{orderId}`
+- _Eingabedaten_: `orderId` (im Pfad)
+- _Ausgabedaten_: Die Bestellung, die durch die `orderId` identifiziert ist, wird angezeigt, oder eine Fehlermeldung,
+  wenn sie nicht existiert.
