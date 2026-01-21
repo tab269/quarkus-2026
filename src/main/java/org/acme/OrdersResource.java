@@ -5,6 +5,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -37,7 +38,9 @@ public class OrdersResource {
     }
 
     @POST
-    public Response createOrder() {
-        return Response.ok().build();
+    public Response createOrder(Order order) {
+        order.setOrderId(UUID.randomUUID());
+        orders.put(order.getOrderId(), order);
+        return Response.created(URI.create(order.getOrderId().toString())).build();
     }
 }
