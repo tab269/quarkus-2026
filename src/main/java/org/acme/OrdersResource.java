@@ -11,6 +11,6 @@ public class OrdersResource {
 
     @GET
     public Response listOrders() {
-        return Response.ok(List.of()).build();
+        return Response.ok(List.of(new Order())).build();
     }
 }
