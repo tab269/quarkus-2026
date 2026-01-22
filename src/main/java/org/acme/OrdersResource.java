@@ -1,9 +1,6 @@
 package org.acme;
 
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriBuilder;
@@ -17,14 +14,20 @@ import java.util.Map;
 import java.util.UUID;
 
 @Path("/orders")
+@Produces(MediaType.APPLICATION_JSON)
 public class OrdersResource {
 
     private final Map<UUID, Order> orders = new HashMap<>();
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
     public Response listOrders() {
         return Response.ok(orders.values()).build();
+    }
+
+    @GET
+    @Path("/{id}")
+    public Response findOrderById(@PathParam("id") UUID id) {
+        return Response.ok().build();
     }
 
     @POST
@@ -38,7 +41,7 @@ public class OrdersResource {
         orders.put(order.getOrderId(), order);
         URI location = UriBuilder
                 .fromResource(OrdersResource.class)
-                .path("/orders/" + order.getOrderId())
+                .path(order.getOrderId().toString())
                 .build();
         return Response.created(location).build();
     }
