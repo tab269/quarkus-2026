@@ -11,6 +11,7 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Path("/orders")
@@ -27,7 +28,12 @@ public class OrdersResource {
     @GET
     @Path("/{id}")
     public Response findOrderById(@PathParam("id") UUID id) {
-        return Response.ok().build();
+        return Optional.ofNullable(orders.get(id))
+                .map(order -> Response.ok(order).build())
+                .orElseGet(() -> Response
+                        .status(Response.Status.NOT_FOUND)
+                        .entity("Order with id '" + id + "' not found")
+                        .build());
     }
 
     @POST
