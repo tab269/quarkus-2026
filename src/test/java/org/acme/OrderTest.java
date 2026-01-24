@@ -94,7 +94,11 @@ class OrderTest {
                 Arguments.of("itemDescription", "     ", "must not be blank"),
                 Arguments.of("itemDescription", "A", "size must be between 2 and 40"),
                 Arguments.of("itemDescription", FOURTY_ONE_CHARS, "size must be between 2 and 40"),
-                Arguments.of("itemDescription", "Banana", null) // valid
+                Arguments.of("itemDescription", "Banana", null), // valid
+
+                Arguments.of("amount", 0, "must be greater than or equal to 1"),
+                Arguments.of("amount", 101, "must be less than or equal to 100"),
+                Arguments.of("amount", 42, null) // valid
         );
     }
 }
