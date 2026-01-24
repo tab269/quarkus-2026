@@ -16,6 +16,8 @@ public class Order {
     @NotBlank
     @Size(min = 2, max = 40)
     private String customerLastname;
+
+    @Size(min = 2, max = 40)
     private String customerFirstname;
     private String itemDescription;
     private int amount;
@@ -41,7 +43,11 @@ public class Order {
     }
 
     public void setCustomerFirstname(String customerFirstname) {
-        this.customerFirstname = customerFirstname;
+        if (customerFirstname == null || customerFirstname.isBlank()) {
+            this.customerFirstname = null;
+        } else {
+            this.customerFirstname = customerFirstname;
+        }
     }
 
     public String getItemDescription() {
