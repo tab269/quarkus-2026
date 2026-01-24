@@ -87,7 +87,14 @@ class OrderTest {
                 Arguments.of("customerFirstname", "     ", null), // valid
                 Arguments.of("customerFirstname", "A", "size must be between 2 and 40"),
                 Arguments.of("customerFirstname", FOURTY_ONE_CHARS, "size must be between 2 and 40"),
-                Arguments.of("customerFirstname", "Max", null) // valid
+                Arguments.of("customerFirstname", "Max", null), // valid
+
+                Arguments.of("itemDescription", null, "must not be null"),
+                Arguments.of("itemDescription", "", "must not be empty"),
+                Arguments.of("itemDescription", "     ", "must not be blank"),
+                Arguments.of("itemDescription", "A", "size must be between 2 and 40"),
+                Arguments.of("itemDescription", FOURTY_ONE_CHARS, "size must be between 2 and 40"),
+                Arguments.of("itemDescription", "Banana", null) // valid
         );
     }
 }
