@@ -12,17 +12,19 @@ import static org.hamcrest.Matchers.*;
 @QuarkusTest
 class OrdersResourceTest {
 
-    private Order oneTestOrder;
+    private Order oneValidTestOrder;
+    private Order oneInvalidTestOrder;
 
     @BeforeEach
     void setUp() {
         // arrange
-        oneTestOrder = createOneTestOrder();
+        oneValidTestOrder = createOneValidTestOrder();
+        oneInvalidTestOrder = createOneInvalidTestOrder();
     }
 
     @Test
     void findOrderById_happyPath() {
-        ValidatableResponse validatableResponse = doOnePOSTrequest();
+        ValidatableResponse validatableResponse = doOneValidPOSTrequest();
 
         // act
         given()
@@ -32,10 +34,10 @@ class OrdersResourceTest {
             .then()
                 .statusCode(200)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body("customerLastname", equalTo(oneTestOrder.getCustomerLastname()))
-                .body("customerFirstname", equalTo(oneTestOrder.getCustomerFirstname()))
-                .body("itemDescription", equalTo(oneTestOrder.getItemDescription()))
-                .body("amount", equalTo(oneTestOrder.getAmount()));
+                .body("customerLastname", equalTo(oneValidTestOrder.getCustomerLastname()))
+                .body("customerFirstname", equalTo(oneValidTestOrder.getCustomerFirstname()))
+                .body("itemDescription", equalTo(oneValidTestOrder.getItemDescription()))
+                .body("amount", equalTo(oneValidTestOrder.getAmount()));
     }
 
     @Test
@@ -50,9 +52,9 @@ class OrdersResourceTest {
     }
 
     @Test
-    void createOrder_shouldPersistOrder() {
+    void createOrder_shouldPersistValidOrder() {
         // act
-        doOnePOSTrequest();
+        doOneValidPOSTrequest();
 
         // assert
         given()
@@ -61,16 +63,27 @@ class OrdersResourceTest {
             .then()
                 .statusCode(200)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body("customerLastname", hasItem(oneTestOrder.getCustomerLastname()))
-                .body("customerFirstname", hasItem(oneTestOrder.getCustomerFirstname()))
-                .body("itemDescription", hasItem(oneTestOrder.getItemDescription()))
-                .body("amount", hasItem(oneTestOrder.getAmount()));
+                .body("customerLastname", hasItem(oneValidTestOrder.getCustomerLastname()))
+                .body("customerFirstname", hasItem(oneValidTestOrder.getCustomerFirstname()))
+                .body("itemDescription", hasItem(oneValidTestOrder.getItemDescription()))
+                .body("amount", hasItem(oneValidTestOrder.getAmount()));
     }
 
-    private ValidatableResponse doOnePOSTrequest() {
+    @Test
+    void createOrder_shouldRejectInvalidOrder() {
+        given()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(oneInvalidTestOrder)
+            .when()
+                .post("/orders")
+            .then()
+                .statusCode(400);
+    }
+
+    private ValidatableResponse doOneValidPOSTrequest() {
         return given()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(oneTestOrder)
+                .body(oneValidTestOrder)
             .when()
                 .post("/orders")
             .then()
@@ -78,11 +91,18 @@ class OrdersResourceTest {
                 .header("Location", notNullValue());
     }
 
-    private static Order createOneTestOrder() {
+    private static Order createOneValidTestOrder() {
         var order = new Order();
         order.setCustomerLastname("Doe");
         order.setCustomerFirstname("John");
         order.setItemDescription("Banana");
+        order.setAmount(3);
+        return order;
+    }
+
+    private static Order createOneInvalidTestOrder() {
+        var order = new Order();
+        order.setCustomerLastname("Doe");
         order.setAmount(3);
         return order;
     }
