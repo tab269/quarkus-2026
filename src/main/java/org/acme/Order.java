@@ -1,9 +1,6 @@
 package org.acme;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 import java.util.UUID;
 
@@ -19,7 +16,15 @@ public class Order {
 
     @Size(min = 2, max = 40)
     private String customerFirstname;
+
+    @NotNull
+    @NotEmpty
+    @NotBlank
+    @Size(min = 2, max = 40)
     private String itemDescription;
+
+    @Min(1)
+    @Max(100)
     private int amount;
 
     public UUID getOrderId() {
