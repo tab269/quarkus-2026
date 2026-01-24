@@ -6,9 +6,12 @@ import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -28,64 +31,34 @@ class OrderTest {
         validatorFactory.close();
     }
 
-    @Test
-    void validateOrder_withNullCustomerLastname_shouldFail() {
-        Set<ConstraintViolation<Order>> violations = validator.validate(new Order());
-        assertEquals(1, violations.stream()
-                .filter(v -> v.getPropertyPath().toString().equals("customerLastname"))
-                .filter(v -> v.getMessage().equals("must not be null"))
-                .count());
+    @ParameterizedTest
+    @MethodSource("customerLastnameInputValueAndExpectedViolationPairsProvider")
+    void validateCustomerLastnameOnOrder(String customerLastnameInput, String expectedViolationMessage) {
+        var order = new Order();
+        order.setCustomerLastname(customerLastnameInput);
+
+        Set<ConstraintViolation<Order>> violations = validator.validate(order);
+
+        if (expectedViolationMessage == null) {
+            assertEquals(0, violations.size()); // valid = happy path
+        } else {
+            long count = violations.stream()
+                    .filter(v -> v.getPropertyPath().toString().equals("customerLastname"))
+                    .filter(v -> v.getMessage().equals(expectedViolationMessage))
+                    .count();
+            assertEquals(1, count); // invalid = violation path
+        }
     }
 
-    @Test
-    void validateOrder_withEmptyCustomerLastname_shouldFail() {
-        var order = new Order();
-        order.setCustomerLastname("");
-        Set<ConstraintViolation<Order>> violations = validator.validate(order);
-        assertEquals(1, violations.stream()
-                .filter(v -> v.getPropertyPath().toString().equals("customerLastname"))
-                .filter(v -> v.getMessage().equals("must not be empty"))
-                .count());
-    }
-
-    @Test
-    void validateOrder_withBlankCustomerLastname_shouldFail() {
-        var order = new Order();
-        order.setCustomerLastname("   ");
-        Set<ConstraintViolation<Order>> violations = validator.validate(order);
-        assertEquals(1, violations.stream()
-                .filter(v -> v.getPropertyPath().toString().equals("customerLastname"))
-                .filter(v -> v.getMessage().equals("must not be blank"))
-                .count());
-    }
-
-    @Test
-    void validateOrder_withTooShortCustomerLastname_shouldFail() {
-        var order = new Order();
-        order.setCustomerLastname("A");
-        Set<ConstraintViolation<Order>> violations = validator.validate(order);
-        assertEquals(1, violations.stream()
-                .filter(v -> v.getPropertyPath().toString().equals("customerLastname"))
-                .filter(v -> v.getMessage().equals("size must be between 2 and 40"))
-                .count());
-    }
-
-    @Test
-    void validateOrder_withTooLongCustomerLastname_shouldFail() {
-        var order = new Order();
-        order.setCustomerLastname("12345678901234567890123456789012345678901");
-        Set<ConstraintViolation<Order>> violations = validator.validate(order);
-        assertEquals(1, violations.stream()
-                .filter(v -> v.getPropertyPath().toString().equals("customerLastname"))
-                .filter(v -> v.getMessage().equals("size must be between 2 and 40"))
-                .count());
-    }
-
-    @Test
-    void validateOrder_withValidCustomerLastname_shouldPass() {
-        var order = new Order();
-        order.setCustomerLastname("Maier");
-        Set<ConstraintViolation<Order>> violations = validator.validate(order);
-        assertEquals(0, violations.size());
+    static Stream<Arguments> customerLastnameInputValueAndExpectedViolationPairsProvider() {
+        return Stream.of(
+                // input value, expected violation message
+                Arguments.of(null, "must not be null"),
+                Arguments.of("", "must not be empty"),
+                Arguments.of("     ", "must not be blank"),
+                Arguments.of("A", "size must be between 2 and 40"),
+                Arguments.of("12345678901234567890123456789012345678901", "size must be between 2 and 40"),
+                Arguments.of("Maier", null) // valid
+        );
     }
 }
