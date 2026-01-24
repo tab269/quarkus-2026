@@ -1,5 +1,6 @@
 package org.acme;
 
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -42,7 +43,7 @@ public class OrdersResource {
             content = @Content(
                     mediaType = MediaType.APPLICATION_JSON,
                     schema = @Schema(implementation = Order.class)))
-    public Response createOrder(Order order) {
+    public Response createOrder(@Valid Order order) {
         order.setOrderId(UUID.randomUUID());
         orders.put(order.getOrderId(), order);
         URI location = UriBuilder
