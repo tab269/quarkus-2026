@@ -29,3 +29,8 @@ Baue Prüfungen ein, welche die übergebenen Daten vor Annahme auf Gültigkeit �
   - `amount`
     - muss positiv sein
     - und kleiner gleich 100
+
+# Optionale Zusatzaufgabe
+
+## RQ5: Validität von `itemDescription` einschränken
+- `itemDescription` soll zusätzlich nur aus Groß- und Kleinbuchstaben bestehen dürfen
