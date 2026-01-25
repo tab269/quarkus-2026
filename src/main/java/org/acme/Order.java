@@ -9,7 +9,6 @@ public class Order {
     private UUID orderId;
 
     @NotNull
-    @NotEmpty
     @NotBlank
     @Size(min = 2, max = 40)
     private String customerLastname;
@@ -18,7 +17,6 @@ public class Order {
     private String customerFirstname;
 
     @NotNull
-    @NotEmpty
     @NotBlank
     @Size(min = 2, max = 40)
     private String itemDescription;

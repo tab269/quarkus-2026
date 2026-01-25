@@ -76,7 +76,7 @@ class OrderTest {
         return Stream.of(
                 // fieldName, fieldValue, expectedViolationMessage
                 Arguments.of("customerLastname", null, "must not be null"),
-                Arguments.of("customerLastname", "", "must not be empty"),
+                Arguments.of("customerLastname", "", "must not be blank"),
                 Arguments.of("customerLastname", "     ", "must not be blank"),
                 Arguments.of("customerLastname", "A", "size must be between 2 and 40"),
                 Arguments.of("customerLastname", FOURTY_ONE_CHARS, "size must be between 2 and 40"),
@@ -90,7 +90,7 @@ class OrderTest {
                 Arguments.of("customerFirstname", "Max", null), // valid
 
                 Arguments.of("itemDescription", null, "must not be null"),
-                Arguments.of("itemDescription", "", "must not be empty"),
+                Arguments.of("itemDescription", "", "must not be blank"),
                 Arguments.of("itemDescription", "     ", "must not be blank"),
                 Arguments.of("itemDescription", "A", "size must be between 2 and 40"),
                 Arguments.of("itemDescription", FOURTY_ONE_CHARS, "size must be between 2 and 40"),
