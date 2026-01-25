@@ -23,3 +23,5 @@
   - die JDBC-Verbindung zur H2-Datenbank und
   - Hibernate-ORM-Parameter
 - Führe eine `OrderEntity` ein, die das Domänenmodell einer Order darstellt und in der Datenbank persistiert wird.
+- Führe ein `OrderRepository` ein, das ein `PanacheRepository<OrderEntity>` implementiert und damit den
+  Datenbank-Zugriff via ORM-Mapping kapselt.
