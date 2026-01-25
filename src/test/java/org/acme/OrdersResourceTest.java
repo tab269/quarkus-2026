@@ -12,8 +12,8 @@ import static org.hamcrest.Matchers.*;
 @QuarkusTest
 class OrdersResourceTest {
 
-    private Order oneValidTestOrder;
-    private Order oneInvalidTestOrder;
+    private OrderDTO oneValidTestOrder;
+    private OrderDTO oneInvalidTestOrder;
 
     @BeforeEach
     void setUp() {
@@ -91,8 +91,8 @@ class OrdersResourceTest {
                 .header("Location", notNullValue());
     }
 
-    private static Order createOneValidTestOrder() {
-        var order = new Order();
+    private static OrderDTO createOneValidTestOrder() {
+        var order = new OrderDTO();
         order.setCustomerLastname("Doe");
         order.setCustomerFirstname("John");
         order.setItemDescription("Banana");
@@ -100,8 +100,8 @@ class OrdersResourceTest {
         return order;
     }
 
-    private static Order createOneInvalidTestOrder() {
-        var order = new Order();
+    private static OrderDTO createOneInvalidTestOrder() {
+        var order = new OrderDTO();
         order.setCustomerLastname("Doe");
         order.setAmount(3);
         return order;

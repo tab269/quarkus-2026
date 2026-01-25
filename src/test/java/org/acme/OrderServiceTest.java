@@ -12,7 +12,7 @@ public class OrderServiceTest {
 
     private OrderService cut; // class under test
 
-    private Map<UUID, Order> ordersMapMock;
+    private Map<UUID, OrderDTO> ordersMapMock;
 
     @Test
     void findAll_shouldCall_valuesOnOrdersMap() {

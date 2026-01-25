@@ -4,7 +4,7 @@ import jakarta.validation.constraints.*;
 
 import java.util.UUID;
 
-public class Order {
+public class OrderDTO {
 
     private UUID orderId;
 

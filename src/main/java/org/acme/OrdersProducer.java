@@ -12,7 +12,7 @@ public class OrdersProducer {
 
     @Produces
     @ApplicationScoped
-    public Map<UUID, Order> produceOrdersMap() {
+    public Map<UUID, OrderDTO> produceOrdersMap() {
         return new HashMap<>();
     }
 }

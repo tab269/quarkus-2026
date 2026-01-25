@@ -46,12 +46,12 @@ public class OrdersResource {
     @GET
     @Path("/{id}")
     public Response findOrderById(@PathParam("id") UUID id) {
-        Optional<Order> order = orderService.findById(id);
+        Optional<OrderDTO> order = orderService.findById(id);
         return order
                 .map(o -> Response.ok(o).build())
                 .orElseGet(() -> Response
                         .status(Response.Status.NOT_FOUND)
-                        .entity("Order with id '" + id + "' not found")
+                        .entity("OrderDTO with id '" + id + "' not found")
                         .build());
     }
 
@@ -60,8 +60,8 @@ public class OrdersResource {
             responseCode = "201",
             content = @Content(
                     mediaType = MediaType.APPLICATION_JSON,
-                    schema = @Schema(implementation = Order.class)))
-    public Response createOrder(@Valid Order order) {
+                    schema = @Schema(implementation = OrderDTO.class)))
+    public Response createOrder(@Valid OrderDTO order) {
         orderService.persist(order);
         URI location = UriBuilder
                 .fromResource(OrdersResource.class)

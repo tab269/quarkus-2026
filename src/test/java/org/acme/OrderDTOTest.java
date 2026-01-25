@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class OrderTest {
+class OrderDTOTest {
 
     public static final String FOURTY_ONE_CHARS = "12345678901234567890123456789012345678901";
     private static Validator validator;
@@ -40,9 +40,9 @@ class OrderTest {
     @MethodSource("createOrdersTestSpecification")
     <T> void validateCustomerLastnameOnOrder(String fieldName, T fieldValue, String expectedViolationMessage)
             throws IntrospectionException, InvocationTargetException, IllegalAccessException {
-        Order testee = createTestOrder(fieldName, fieldValue);
+        OrderDTO testee = createTestOrder(fieldName, fieldValue);
 
-        Set<ConstraintViolation<Order>> violations = validator.validate(testee);
+        Set<ConstraintViolation<OrderDTO>> violations = validator.validate(testee);
 
         if (expectedViolationMessage == null) {
             assertEquals(0, violations.size()); // valid = happy path
@@ -55,9 +55,9 @@ class OrderTest {
         }
     }
 
-    private <T> Order createTestOrder(String fieldName, T fieldValue)
+    private <T> OrderDTO createTestOrder(String fieldName, T fieldValue)
             throws IntrospectionException, InvocationTargetException, IllegalAccessException {
-        var order = new Order();
+        var order = new OrderDTO();
         // initialize a valid object
         order.setCustomerLastname("valid from Test");
         order.setCustomerFirstname("valid from Test");
@@ -65,7 +65,7 @@ class OrderTest {
         order.setAmount(10);
 
         // and override the field for the test at hand
-        var propertyDescriptor = new PropertyDescriptor(fieldName, Order.class);
+        var propertyDescriptor = new PropertyDescriptor(fieldName, OrderDTO.class);
         Method setter = propertyDescriptor.getWriteMethod();
         setter.invoke(order, fieldValue);
 

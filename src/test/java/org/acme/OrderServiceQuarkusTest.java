@@ -27,9 +27,9 @@ class OrderServiceQuarkusTest {
     @Alternative
     @Priority(1)
     @ApplicationScoped
-    public Map<UUID, Order> produceTestOrders() {
-        Map<UUID, Order> testOrdersMap = new HashMap<>();
-        Order order = new Order();
+    public Map<UUID, OrderDTO> produceTestOrders() {
+        Map<UUID, OrderDTO> testOrdersMap = new HashMap<>();
+        OrderDTO order = new OrderDTO();
         order.setOrderId(JOHN_DOES_ORDER_ID);
         order.setCustomerLastname("Doe");
         order.setCustomerFirstname("John");
@@ -42,11 +42,11 @@ class OrderServiceQuarkusTest {
     @Test
     void findAll_shouldReturnJohnDoesOrder() {
         // act
-        Collection<Order> actualOrders = cut.findAll();
+        Collection<OrderDTO> actualOrders = cut.findAll();
 
         // assert
         assertEquals(1, actualOrders.size());
-        Order actualOrder = actualOrders.iterator().next();
+        OrderDTO actualOrder = actualOrders.iterator().next();
         assertEquals(JOHN_DOES_ORDER_ID, actualOrder.getOrderId());
         assertEquals("John", actualOrder.getCustomerFirstname());
         assertEquals("Doe", actualOrder.getCustomerLastname());
