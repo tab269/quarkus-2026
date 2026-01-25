@@ -18,6 +18,7 @@ public class Order {
 
     @NotNull
     @NotBlank
+    @Alphabetic
     @Size(min = 2, max = 40)
     private String itemDescription;
 

@@ -61,7 +61,7 @@ class OrderTest {
         // initialize a valid object
         order.setCustomerLastname("valid from Test");
         order.setCustomerFirstname("valid from Test");
-        order.setItemDescription("valid from Test");
+        order.setItemDescription("validFromTest");
         order.setAmount(10);
 
         // and override the field for the test at hand
@@ -94,6 +94,7 @@ class OrderTest {
                 Arguments.of("itemDescription", "     ", "must not be blank"),
                 Arguments.of("itemDescription", "A", "size must be between 2 and 40"),
                 Arguments.of("itemDescription", FOURTY_ONE_CHARS, "size must be between 2 and 40"),
+                Arguments.of("itemDescription", "Sh0e", "may only contain letters (A-Z, a-z)"),
                 Arguments.of("itemDescription", "Banana", null), // valid
 
                 Arguments.of("amount", 0, "must be greater than or equal to 1"),
