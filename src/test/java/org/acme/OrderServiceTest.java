@@ -2,9 +2,6 @@ package org.acme;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
-import java.util.UUID;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -12,20 +9,20 @@ public class OrderServiceTest {
 
     private OrderService cut; // class under test
 
-    private Map<UUID, OrderDTO> ordersMapMock;
+    private OrderRepository orderRepositoryMock;
 
     @Test
-    void findAll_shouldCall_valuesOnOrdersMap() {
+    void findAll_shouldCall_listAllOnRepository() {
         // Mock erzeugen
-        ordersMapMock = mock(Map.class);
+        orderRepositoryMock = mock(OrderRepository.class);
 
-        // Verhalten definieren (hier optional, weil Map nicht von uns stammt
-        // und wir nicht von einem Fehlverhalten in java.util ausgehen ;)
-        // Wir wollen nicht die Map testen sondern, ob der Service die Map korrekt aufruft.
-        // Mockito.when(ordersMapMock.values()).thenReturn(List.of());
+        // Verhalten definieren (hier optional, weil listAll() am Repository nicht von uns stammt
+        // und wir nicht von einem Fehlverhalten in Hibernate/Panache ausgehen ;)
+        // Wir wollen nicht die Hibernate/Panache testen sondern, ob der Service das Repository korrekt aufruft.
+        // Mockito.when(orderRepositoryMock.listAll()).thenReturn(List.of());
 
         // Mock in CUT (Service) injizieren
-        cut = new OrderService(ordersMapMock);
+        cut = new OrderService(orderRepositoryMock);
 
         // Ergebnis testen (Chicago-Style, hier optional weil wir von funktionierender Map ausgehen)
         // assertEquals(0, cut.findAll().size());
@@ -33,6 +30,6 @@ public class OrderServiceTest {
         cut.findAll();
 
         // überprüfen, dass die Methoden im Service aufgerufen wurden (London-Style)
-        verify(ordersMapMock, times(1)).values();
+        verify(orderRepositoryMock, times(1)).listAll();
     }
 }

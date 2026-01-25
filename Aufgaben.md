@@ -25,3 +25,7 @@
 - Führe eine `OrderEntity` ein, die das Domänenmodell einer Order darstellt und in der Datenbank persistiert wird.
 - Führe ein `OrderRepository` ein, das ein `PanacheRepository<OrderEntity>` implementiert und damit den
   Datenbank-Zugriff via ORM-Mapping kapselt.
+- Verwende das Repository im Service
+- denke beim Persistieren an `@Transactional`
+- schreibe einen Mapper, der zwischen DTO und Entity bidirektional wandeln kann
+- verwende den Mapper im Service

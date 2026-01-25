@@ -14,7 +14,6 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
 import java.net.URI;
-import java.util.Optional;
 import java.util.UUID;
 
 @Path("/orders")
@@ -44,14 +43,13 @@ public class OrdersResource {
     }
 
     @GET
-    @Path("/{id}")
-    public Response findOrderById(@PathParam("id") UUID id) {
-        Optional<OrderDTO> order = orderService.findById(id);
-        return order
-                .map(o -> Response.ok(o).build())
+    @Path("/{orderId}")
+    public Response findOrderByOrderId(@PathParam("orderId") UUID orderId) {
+        return orderService.findByOrderId(orderId)
+                .map(d -> Response.ok(d).build())
                 .orElseGet(() -> Response
                         .status(Response.Status.NOT_FOUND)
-                        .entity("OrderDTO with id '" + id + "' not found")
+                        .type(MediaType.APPLICATION_JSON)
                         .build());
     }
 

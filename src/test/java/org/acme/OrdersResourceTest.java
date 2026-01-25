@@ -23,7 +23,7 @@ class OrdersResourceTest {
     }
 
     @Test
-    void findOrderById_happyPath() {
+    void findOrderByOrderId_happyPath() {
         ValidatableResponse validatableResponse = doOneValidPOSTrequest();
 
         // act
@@ -41,7 +41,7 @@ class OrdersResourceTest {
     }
 
     @Test
-    void findOrderById_idNotFound() {
+    void findOrderByOrderId_idNotFound() {
         // act
         given()
             .when()

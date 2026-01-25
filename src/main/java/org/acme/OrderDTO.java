@@ -6,6 +6,8 @@ import java.util.UUID;
 
 public class OrderDTO {
 
+    private Long id;
+
     private UUID orderId;
 
     @NotNull
@@ -25,6 +27,15 @@ public class OrderDTO {
     @Min(1)
     @Max(100)
     private int amount;
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public UUID getOrderId() {
         return orderId;
