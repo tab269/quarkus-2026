@@ -1,36 +1,41 @@
 # Aktueller Stand
-## Was können wir aktuell:
-- Orders erzeugen
-- Orders anzeigen
+Die Ressource macht schon ganz schön viel: Sie
+- nimmt Daten von außen entgegen,
+- macht die Validierung und
+- kümmert sich um eine adäquate Antwort.
 
-## Was ist mit ungültigen Daten?
-- `NULL`-, `EMPTY`- oder `BLANK`-Werten z.B.
-  - `customerLastname = null`
-  - `customerFirstname = ""`
-  - `itemDescription = "     "`
-- _out-of-bounds_-Werten z.B.
-  - `amount = -5`
-  - `amount = 3.4`
+Zusätzlich kommuniziert sie auch nach innen mit der Map, was später die Datenbank sein wird.
+- Dazu erzeugt sie beim Erstellen auch eine eindeutige `orderId`.
+
+- Kurz: sie führt (weitere) Business-Logik aus.
+
+Um diese gänzlich unterschiedlichen Verantwortlichkeiten sauber zu trennen, sollte sich die Order-Ressource nur mit
+ihren Kernaufgaben, der REST-Kommunikation, beschäftigen und andere Aufgaben an einen Service delegieren.
 
 # Aufgaben
-Baue Prüfungen ein, welche die übergebenen Daten vor Annahme auf Gültigkeit überprüfen.
 
-## RQ4: Validität der Übergebenen Daten prüfen
-  - `customerLastname`
-    - darf nicht `null` sein
-    - darf nicht "" (empty)
-    - darf nicht "   " (blank) sein, d.h. nur aus Leerzeichen bestehen
-    - muss aus mindestens zwei und maximal 40 Zeichen bestehen
-  - `customerFirstname`
-    - darf `null`, "" (empty), "    " sein, wird dann intern aber als `null` gesetzt
-    - wenn das Feld intern nicht `null` ist, muss es aus mindestens zwei und maximal 40 Zeichen bestehen
-  - `itemDescription`
-    - wie `customerLastname`
-  - `amount`
-    - muss positiv sein
-    - und kleiner gleich 100
+## RQ6: Führe einen `OrderService` ein
+- mit den Methoden
+  - `findAll()`
+  - `findById(UUID)`
+  - `persist(Order)`
+- der die Map (später die Datenbankverbindung) enthält und verwendet.
+- Verwende diesen `OrderService` in der Ressource.
 
-# Optionale Zusatzaufgabe
+## RQ7: Mache die Ressource RequestScoped
+- und stelle fest, dass nichts mehr gespeichert wird: Daten sind nach jedem Request weg.
+- Schaue Dir ggf. mit `@PostConstruct` und `@PreDestroy` (aus `jakarta.annotation`) den Lebenszyklus der Ressource an. 
 
-## RQ5: Validität von `itemDescription` einschränken
-- `itemDescription` soll zusätzlich nur aus Groß- und Kleinbuchstaben bestehen dürfen
+## RQ8: Injiziere den `OrderService` via _CDI_
+- statt ihn mit `new` zu erzeugen
+- nutze dafür `@Inject`
+- Was ist besser: _Constructor Injection_, _Field Injection_ oder _Setter Injection_?
+    Diskutiert die Vor- und Nachteile.
+- Warum lässt sich der `OrderService` nicht injizieren?
+  - Weshalb kennt _CDI_ den `OrderService` nicht?
+  - Was brauchen wir dafür?
+- Stelle sicher, dass alle Tests weiterhin laufen.
+
+## RQ9: Schreibe neue Tests für den `OrderService`
+- einen (schnellen) _UnitTest_ (verwende dazu Mockito, um die Map zu mocken)
+- einen vollständigeren `@QuarkusTest` (Integrationstest, der auch CDI testet)
