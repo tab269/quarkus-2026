@@ -15,7 +15,7 @@ import java.util.UUID;
 @Path("/orders")
 public class OrderResource {
 
-    private Map<UUID, OrderDTO> orders = new HashMap<>();
+    private final Map<UUID, OrderDTO> orders = new HashMap<>();
     {
         orders.put(UUID.randomUUID(), new OrderDTO() {{ customerFirstname = "Alex"; amount = 1;}});
         orders.put(UUID.randomUUID(), new OrderDTO() {{ customerFirstname = "Mike"; amount = 5;}});
@@ -47,16 +47,11 @@ public class OrderResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/filter")
     public Response filter(OrderFilterDTO orderFilterDTO) {
-        List<OrderDTO> foundOrders = orders.values().stream().filter(o -> {
-            switch (orderFilterDTO.getFilterOperator())  {
-                case LESS_THAN:
-                    return o.amount < orderFilterDTO.getAmount();
-                case GREATER_THAN:
-                    return o.amount > orderFilterDTO.getAmount();
-                default:
-                    throw new IllegalArgumentException("Invalid filter operator: " + orderFilterDTO.getFilterOperator());
-            }
-        }).toList();
+        List<OrderDTO> foundOrders = orders.values().stream()
+                .filter(o -> switch (orderFilterDTO.getFilterOperator()) {
+                                        case LESS_THAN -> o.amount < orderFilterDTO.getAmount();
+                                        case GREATER_THAN -> o.amount > orderFilterDTO.getAmount();
+                    }).toList();
         return Response.ok(foundOrders).build();
     }
 
