@@ -2,7 +2,7 @@ package org.acme;
 
 import java.util.UUID;
 
-public class Order {
+public class OrderDTO {
 
     public UUID orderId;
     public String customerLastname;

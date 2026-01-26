@@ -9,7 +9,7 @@ Für den Moment reicht eine Map als (flüchtiger) Datenspeicher.
 - _Endpunkt_: `GET` auf `/orders`
 - _Eingabedaten_: `keine`
 - _Ausgabedaten_: Die bisher angelegten Bestellungen werden als (ggf. leere) Liste nacheinander ausgegeben.
-  Eine Bestellung (`order`) hat die folgenden Felder:
+  Eine Bestellung (`orderDTO`) hat die folgenden Felder:
   - `orderId`
   - `customerLastname`
   - `customerFirstname`
