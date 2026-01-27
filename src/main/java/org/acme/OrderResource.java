@@ -1,59 +1,66 @@
 package org.acme;
 
 import io.quarkus.runtime.util.StringUtil;
-import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Valid;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
 import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.UriBuilder;
 
 import java.net.URI;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @Path("/orders")
 public class OrderResource implements OrderAPI {
 
-    private final Map<UUID, OrderDTO> orders = new HashMap<>();
+    static final Map<UUID, OrderEntity> orders = new HashMap<>();
     {
-        orders.put(UUID.randomUUID(), new OrderDTO() {{ customerFirstname = "Alex"; amount = 1;}});
-        orders.put(UUID.randomUUID(), new OrderDTO() {{ customerFirstname = "Mike"; amount = 5;}});
-        orders.put(UUID.randomUUID(), new OrderDTO() {{ customerFirstname = "Dörte"; amount = 5;}});
-        orders.put(UUID.randomUUID(), new OrderDTO() {{ customerFirstname = "Robbi"; amount = 72;}});
-        orders.put(UUID.randomUUID(), new OrderDTO() {{ customerFirstname = "Anton-Peter"; amount = 72;}});
-        orders.put(UUID.randomUUID(), new OrderDTO() {{ customerFirstname = "Anton Peter"; amount = 72;}});
-        orders.put(UUID.randomUUID(), new OrderDTO() {{ customerFirstname = "Carola"; amount = 60;}});
+        orders.put(UUID.randomUUID(), new OrderEntity(null, "Alex", "", 1));
+        orders.put(UUID.randomUUID(), new OrderEntity( null, "Mike", "", 5));
+        orders.put(UUID.randomUUID(), new OrderEntity(null, "Dörte", "", 5));
+        orders.put(UUID.randomUUID(), new OrderEntity( null,"Robbi", "", 72));
+        orders.put(UUID.randomUUID(), new OrderEntity( null,"Anton-Peter", "", 72));
+        orders.put(UUID.randomUUID(), new OrderEntity( null,"Anton Peter", "", 72));
+        orders.put(UUID.randomUUID(), new OrderEntity( null,"Carola", "", 60));
     }
 
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response erzeugeOrder(@Valid OrderDTO orderDTO, @Context UriInfo uriInfo) {
-//        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-//        Set<ConstraintViolation<OrderDTO>> validationResult = validator.validate(orderDTO);
-//        validationResult.forEach(violation -> {
-//           violation.getPropertyPath().forEach(propertyPath -> {
-//
-//           });
-//        });
+    // public Response erzeugeOrder(@Valid OrderDTO orderDTO, @Context UriInfo uriInfo) {
+    public Response erzeugeOrder(@Valid OrderDTO orderDTO) {
+        // Alternative Möglichkeit zur Valid-Annotation am Parameter,
+        // um z.B. Fehlermeldungen zu loggen aber NICHT via REST zu responden (security)
+        // Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+        // Set<ConstraintViolation<OrderDTO>> validationResult = validator.validate(orderDTO);
+        // validationResult.forEach(violation -> {
+        //     violation.getPropertyPath().forEach(propertyPath -> {
+        //         ...
+        //     });
+        // });
         if (StringUtil.isNullOrEmpty(orderDTO.customerFirstname)) {
             orderDTO.customerFirstname = null;
         }
         orderDTO.orderId = UUID.randomUUID();
-        orders.put(orderDTO.orderId, orderDTO);
-        URI location = uriInfo.getAbsolutePathBuilder().path(orderDTO.orderId.toString()).build();
 
-//        return Response.status(Response.Status.CREATED).location(location).build();
+        OrderEntity orderEntity = OrderMapper.toEntity(orderDTO);
+        orders.put(orderEntity.getOrderId(), orderEntity);
+        // URI location = uriInfo.getAbsolutePathBuilder().path(orderDTO.orderId.toString()).build();
+        URI location = UriBuilder
+                .fromResource(OrderResource.class)
+                .path(orderDTO.orderId.toString())
+                .build();
+
         return Response.created(location).build();
     }
 
     @GET
     @Path("/findByAmountGreaterThan")
     public Response findOrdersByAmountGreaterThan(@QueryParam("amount") int amount) {
-        List<OrderDTO> foundOrders = orders.values().stream().filter(orderDTO -> orderDTO.amount > amount).toList();
+        List<OrderDTO> foundOrders = orders.values().stream()
+                .filter(orderEntity -> orderEntity.getAmount() > amount)
+                .map(OrderMapper::toDTO)
+                .toList();
         return Response.ok(foundOrders).build();
     }
 
@@ -64,16 +71,20 @@ public class OrderResource implements OrderAPI {
     public Response filter(OrderFilterDTO orderFilterDTO) {
         List<OrderDTO> foundOrders = orders.values().stream()
                 .filter(o -> switch (orderFilterDTO.getFilterOperator()) {
-                                        case LESS_THAN -> o.amount < orderFilterDTO.getAmount();
-                                        case GREATER_THAN -> o.amount > orderFilterDTO.getAmount();
-                    }).toList();
+                                        case LESS_THAN -> o.getAmount() < orderFilterDTO.getAmount();
+                                        case GREATER_THAN -> o.getAmount() > orderFilterDTO.getAmount();
+                    })
+                .map(OrderMapper::toDTO)
+                .toList();
         return Response.ok(foundOrders).build();
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getOrders() {
-        return Response.ok(orders.values()).build();
+        return Response.ok(orders.values().stream()
+                .map(OrderMapper::toDTO)
+                .toList()).build();
     }
 
     @GET

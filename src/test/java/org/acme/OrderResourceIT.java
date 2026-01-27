@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.nullValue;
@@ -23,18 +22,18 @@ class OrderResourceIT {
           .when().get("/orders")
           .then()
              .statusCode(200)
-             .body("customerFirstname", hasItem("Carola"))
-            .body("customerFirstname", hasItem("Mike"))
-            .body("customerFirstname", hasItem("Dörte"))
-            .body("customerFirstname", hasItem("Anton-Peter"))
-            .body("customerFirstname", hasItem("Anton Peter"))
-            .body("customerFirstname", hasItem("Alex"))
-            .body("customerFirstname", hasItem("Robbi"));
+             .body("customerLastname", hasItem("Carola"))
+            .body("customerLastname", hasItem("Mike"))
+            .body("customerLastname", hasItem("Dörte"))
+            .body("customerLastname", hasItem("Anton-Peter"))
+            .body("customerFirstname", hasItem("Anton"))
+            .body("customerLastname", hasItem("Alex"))
+            .body("customerLastname", hasItem("Robbi"));
     }
 
     @Disabled // use unit test
     @Test
-    void testPostWithOrderWithBlankFirstname_shouldResetFirstnameToNull() {
+    void testPostWithOrderWithBlankFirstname_shouldResetFirstnameToNullOnPersistedOrder() {
         Response postResponse = given()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(createTestOrderWithBlankFirstname())
