@@ -1,5 +1,10 @@
 package org.acme;
 
+import io.quarkus.runtime.util.StringUtil;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Valid;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
@@ -7,26 +12,36 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Path("/orders")
-public class OrderResource {
+public class OrderResource implements OrderAPI {
 
     private final Map<UUID, OrderDTO> orders = new HashMap<>();
     {
         orders.put(UUID.randomUUID(), new OrderDTO() {{ customerFirstname = "Alex"; amount = 1;}});
         orders.put(UUID.randomUUID(), new OrderDTO() {{ customerFirstname = "Mike"; amount = 5;}});
+        orders.put(UUID.randomUUID(), new OrderDTO() {{ customerFirstname = "Dörte"; amount = 5;}});
         orders.put(UUID.randomUUID(), new OrderDTO() {{ customerFirstname = "Robbi"; amount = 72;}});
+        orders.put(UUID.randomUUID(), new OrderDTO() {{ customerFirstname = "Anton-Peter"; amount = 72;}});
+        orders.put(UUID.randomUUID(), new OrderDTO() {{ customerFirstname = "Anton Peter"; amount = 72;}});
         orders.put(UUID.randomUUID(), new OrderDTO() {{ customerFirstname = "Carola"; amount = 60;}});
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response erzeugeOrder(OrderDTO orderDTO, @Context UriInfo uriInfo) {
+    public Response erzeugeOrder(@Valid OrderDTO orderDTO, @Context UriInfo uriInfo) {
+//        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+//        Set<ConstraintViolation<OrderDTO>> validationResult = validator.validate(orderDTO);
+//        validationResult.forEach(violation -> {
+//           violation.getPropertyPath().forEach(propertyPath -> {
+//
+//           });
+//        });
+        if (StringUtil.isNullOrEmpty(orderDTO.customerFirstname)) {
+            orderDTO.customerFirstname = null;
+        }
         orderDTO.orderId = UUID.randomUUID();
         orders.put(orderDTO.orderId, orderDTO);
         URI location = uriInfo.getAbsolutePathBuilder().path(orderDTO.orderId.toString()).build();

@@ -1,30 +1,36 @@
+# Aktueller Stand
+## Was können wir aktuell:
+- Orders erzeugen
+- Orders anzeigen
+
+## Was ist mit ungültigen Daten?
+- `NULL`-, `EMPTY`- oder `BLANK`-Werten z.B.
+    - `customerLastname = null`
+    - `customerFirstname = ""`
+    - `itemDescription = "     "`
+- _out-of-bounds_-Werten z.B.
+    - `amount = -5`
+    - `amount = 3.4`
+
 # Aufgaben
-Implementiere einen (Micro-)Service _Orders_, der Bestellungen verwalten kann.
-Gehe dabei inkrementell vor und beginne mit einer _REST-API_.
-Aktuell braucht es noch keine Datenbank zum Persistieren.
-Für den Moment reicht eine Map als (flüchtiger) Datenspeicher.
+Baue Prüfungen ein, welche die übergebenen Daten vor Annahme auf Gültigkeit überprüfen.
 
-## RQ1: Bestellungen anzeigen
-- _Beschreibung_: Der Anwender kann alle existierenden Bestellungen anzeigen.
-- _Endpunkt_: `GET` auf `/orders`
-- _Eingabedaten_: `keine`
-- _Ausgabedaten_: Die bisher angelegten Bestellungen werden als (ggf. leere) Liste nacheinander ausgegeben.
-  Eine Bestellung (`orderDTO`) hat die folgenden Felder:
-  - `orderId`
-  - `customerLastname`
-  - `customerFirstname`
-  - `itemDescription`
-  - `amount`
+## RQ4: Validität der übergebenen Daten prüfen
+- `customerLastname`
+    - darf nicht `null` sein
+    - darf nicht "" (empty)
+    - darf nicht "   " (blank) sein, d.h. nur aus Leerzeichen bestehen
+    - muss aus mindestens zwei und maximal 40 Zeichen bestehen
+- `customerFirstname`
+    - darf `null`, "" (empty), "    " sein, wird dann intern aber als `null` gesetzt
+    - wenn das Feld intern nicht `null` ist, muss es aus mindestens zwei und maximal 40 Zeichen bestehen
+- `itemDescription`
+    - wie `customerLastname`
+- `amount`
+    - muss positiv sein
+    - und kleiner gleich 100
 
-## RQ2: Bestellung aufgeben
-- _Beschreibung_: Der Anwender kann eine neue Bestellung anlegen.
-- _Endpunkt_: `POST` auf `/orders`
-- _Eingabedaten_: Felder einer Bestellung (ohne `orderId`)
-- _Ausgabedaten_: Die angelegte Bestellung wird mit einer vom System generierten `orderId` quittiert.
+# Optionale Zusatzaufgabe
 
-## RQ3: Einzelne Bestellung anzeigen
-- _Beschreibung_: Der Anwender kann eine bestimmte Bestellung anzeigen.
-- _Endpunkt_: `GET` auf `/orders/{orderId}`
-- _Eingabedaten_: `orderId` (im Pfad)
-- _Ausgabedaten_: Die Bestellung, die durch die `orderId` identifiziert ist, wird angezeigt, oder eine Fehlermeldung,
-  wenn sie nicht existiert.
+## RQ5: Validität von `itemDescription` einschränken
+- `itemDescription` soll zusätzlich nur aus Groß- und Kleinbuchstaben bestehen dürfen
