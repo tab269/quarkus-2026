@@ -1,0 +1,24 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog
+    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet author="quarkus" id="1">
+        <createSequence sequenceName="OrderEntity_SEQ"
+                        startValue="1"
+                        incrementBy="50" />
+        <createTable tableName="OrderEntity">
+            <column name="ID" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="orderId" type="CHAR(36)" />
+            <column name="customerName" type="VARCHAR(40)" />
+            <column name="itemDescription" type="VARCHAR(255)" />
+            <column name="amount" type="int" />
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

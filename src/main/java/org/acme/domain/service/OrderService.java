@@ -2,29 +2,34 @@ package org.acme.domain.service;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import org.acme.domain.model.OrderEntity;
+import org.acme.persistence.OrdersRepository;
 
 import java.util.*;
 
 @ApplicationScoped
 public class OrderService {
 
-    private final Map<UUID, OrderEntity> orderRepository;
+    private final OrdersRepository orderOrdersRepository;
 
     @Inject
-    public OrderService(Map<UUID, OrderEntity> orderRepository) {
-        this.orderRepository = orderRepository;
+    public OrderService(OrdersRepository orderRepository) {
+        this.orderOrdersRepository = orderRepository;
     }
 
-    public void save(OrderEntity orderEntity) {
-        orderRepository.put(orderEntity.getOrderId(), orderEntity);
+    @Transactional
+    public OrderEntity save(OrderEntity orderEntity) {
+        orderEntity.setOrderId(UUID.randomUUID());
+        orderOrdersRepository.persist(orderEntity);
+        return orderEntity;
     }
 
     public Collection<OrderEntity> findAll() {
-        return orderRepository.values();
+        return orderOrdersRepository.listAll();
     }
 
     public Optional<OrderEntity> findById(UUID orderId) {
-        return orderRepository.values().stream().filter(order -> order.getOrderId().equals(orderId)).findFirst();
+        return orderOrdersRepository.findByOrderId(orderId);
     }
 }

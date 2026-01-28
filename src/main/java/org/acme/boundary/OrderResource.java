@@ -1,14 +1,13 @@
 package org.acme.boundary;
 
-import io.quarkus.runtime.util.StringUtil;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriBuilder;
-import org.acme.domain.service.OrderService;
 import org.acme.domain.model.OrderEntity;
+import org.acme.domain.service.OrderService;
 
 import java.net.URI;
 import java.util.List;
@@ -35,17 +34,15 @@ public class OrderResource implements OrderAPI {
         //         ...
         //     });
         // });
-        if (StringUtil.isNullOrEmpty(orderDTO.customerFirstname)) {
+        if (orderDTO.customerFirstname == null || orderDTO.customerFirstname.isBlank()) {
             orderDTO.customerFirstname = null;
         }
-        orderDTO.orderId = UUID.randomUUID();
-
         OrderEntity orderEntity = OrderMapper.toEntity(orderDTO);
-        orderService.save(orderEntity);
-        // URI location = uriInfo.getAbsolutePathBuilder().path(orderDTO.orderId.toString()).build();
+        OrderEntity orderEntityPersisted = orderService.save(orderEntity);
+        OrderDTO orderDTOResult = OrderMapper.toDTO(orderEntityPersisted);
         URI location = UriBuilder
                 .fromResource(OrderResource.class)
-                .path(orderDTO.orderId.toString())
+                .path(orderDTOResult.getOrderId().toString())
                 .build();
 
         return Response.created(location).build();

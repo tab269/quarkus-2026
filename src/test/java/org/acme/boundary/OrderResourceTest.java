@@ -1,6 +1,7 @@
 package org.acme.boundary;
 
 import jakarta.ws.rs.core.Response;
+import org.acme.domain.model.OrderEntity;
 import org.acme.domain.service.OrderService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,7 +9,6 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 import java.net.URI;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,21 +19,27 @@ class OrderResourceTest {
 
     private OrderResource cut; // class under test
 
-    OrderService orderService;
+    OrderService orderServiceMock;
 
 
     @BeforeEach
     public void setUp() {
-        orderService = Mockito.mock(OrderService.class);
-        cut = new OrderResource(orderService);
+        orderServiceMock = Mockito.mock(OrderService.class);
+        cut = new OrderResource(orderServiceMock);
     }
 
     @Test
     void erzeugeOrder_addOrderToMap() {
-        when(orderService.findById(any())).thenReturn(Optional.empty());
-
         // arrange
         UUID orderIdExpected = UUID.fromString("92f679e6-c082-442c-ab66-6d938b1a66c1");
+        var dummyOrderEntity = new OrderEntity();
+        dummyOrderEntity.setId(42L);
+        dummyOrderEntity.setOrderId(orderIdExpected);
+        dummyOrderEntity.setCustomerName("TestName");
+        dummyOrderEntity.setItemDescription("TestItem");
+        dummyOrderEntity.setAmount(99);
+        when(orderServiceMock.save(any())).thenReturn(dummyOrderEntity);
+
         try (MockedStatic<UUID> mocked = mockStatic(UUID.class)) {
             mocked.when(UUID::randomUUID).thenReturn(orderIdExpected);
             OrderDTO testOrder = createTestOrderWithBlankFirstname();
@@ -48,8 +54,7 @@ class OrderResourceTest {
                 assertEquals(expectedLocation, location);
                 System.out.println("expectedLocation = " + expectedLocation);
 
-//                assertTrue(orderService.findById(orderIdExpected).isEmpty());
-                verify(orderService).save(any());
+                verify(orderServiceMock).save(any());
             }
         }
     }

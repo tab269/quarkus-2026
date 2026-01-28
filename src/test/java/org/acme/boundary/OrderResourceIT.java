@@ -2,10 +2,7 @@ package org.acme.boundary;
 
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.response.Response;
-import jakarta.inject.Inject;
 import jakarta.ws.rs.core.MediaType;
-import org.acme.domain.service.OrderService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -27,6 +24,8 @@ class OrderResourceIT {
 //        orderService.clearAll();
 //    }
 
+    // FIXME: wir resetten aktuell vor jedem Test die Datenbank nicht
+    @Disabled
     @Test
     void testGetOnOrdersEndpoint_shouldReturnTestdata() {
         given()

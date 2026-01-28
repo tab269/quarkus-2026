@@ -1,9 +1,18 @@
 package org.acme.domain.model;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import jakarta.persistence.*;
+
 import java.util.UUID;
 
-public class OrderEntity {
+@Entity
+public class OrderEntity extends PanacheEntityBase {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    @Column(nullable = false, unique = true, updatable = false, columnDefinition = "CHAR(36)")
     private UUID orderId;
     private String customerName;
     private String itemDescription;
@@ -19,6 +28,14 @@ public class OrderEntity {
         this.customerName = customerName;
         this.itemDescription = itemDescription;
         this.amount = amount;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public UUID getOrderId() {
