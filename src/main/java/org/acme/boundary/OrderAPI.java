@@ -1,4 +1,4 @@
-package org.acme;
+package org.acme.boundary;
 
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;

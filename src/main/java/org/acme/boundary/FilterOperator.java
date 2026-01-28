@@ -1,4 +1,4 @@
-package org.acme;
+package org.acme.boundary;
 
 public enum FilterOperator {
     LESS_THAN,

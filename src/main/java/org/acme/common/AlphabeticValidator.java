@@ -1,4 +1,4 @@
-package org.acme;
+package org.acme.common;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

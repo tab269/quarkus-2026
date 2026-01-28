@@ -1,30 +1,27 @@
-package org.acme;
+package org.acme.boundary;
 
 import io.quarkus.runtime.util.StringUtil;
+import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriBuilder;
+import org.acme.domain.service.OrderService;
+import org.acme.domain.model.OrderEntity;
 
 import java.net.URI;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @Path("/orders")
 public class OrderResource implements OrderAPI {
 
-    static final Map<UUID, OrderEntity> orders = new HashMap<>();
-    {
-        orders.put(UUID.randomUUID(), new OrderEntity(null, "Alex", "", 1));
-        orders.put(UUID.randomUUID(), new OrderEntity( null, "Mike", "", 5));
-        orders.put(UUID.randomUUID(), new OrderEntity(null, "Dörte", "", 5));
-        orders.put(UUID.randomUUID(), new OrderEntity( null,"Robbi", "", 72));
-        orders.put(UUID.randomUUID(), new OrderEntity( null,"Anton-Peter", "", 72));
-        orders.put(UUID.randomUUID(), new OrderEntity( null,"Anton Peter", "", 72));
-        orders.put(UUID.randomUUID(), new OrderEntity( null,"Carola", "", 60));
+    OrderService orderService;
+
+    @Inject
+    public OrderResource(OrderService orderService) {
+        this.orderService = orderService;
     }
 
     // public Response erzeugeOrder(@Valid OrderDTO orderDTO, @Context UriInfo uriInfo) {
@@ -44,7 +41,7 @@ public class OrderResource implements OrderAPI {
         orderDTO.orderId = UUID.randomUUID();
 
         OrderEntity orderEntity = OrderMapper.toEntity(orderDTO);
-        orders.put(orderEntity.getOrderId(), orderEntity);
+        orderService.save(orderEntity);
         // URI location = uriInfo.getAbsolutePathBuilder().path(orderDTO.orderId.toString()).build();
         URI location = UriBuilder
                 .fromResource(OrderResource.class)
@@ -57,7 +54,7 @@ public class OrderResource implements OrderAPI {
     @GET
     @Path("/findByAmountGreaterThan")
     public Response findOrdersByAmountGreaterThan(@QueryParam("amount") int amount) {
-        List<OrderDTO> foundOrders = orders.values().stream()
+        List<OrderDTO> foundOrders = orderService.findAll().stream()
                 .filter(orderEntity -> orderEntity.getAmount() > amount)
                 .map(OrderMapper::toDTO)
                 .toList();
@@ -69,7 +66,7 @@ public class OrderResource implements OrderAPI {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/filter")
     public Response filter(OrderFilterDTO orderFilterDTO) {
-        List<OrderDTO> foundOrders = orders.values().stream()
+        List<OrderDTO> foundOrders = orderService.findAll().stream()
                 .filter(o -> switch (orderFilterDTO.getFilterOperator()) {
                                         case LESS_THAN -> o.getAmount() < orderFilterDTO.getAmount();
                                         case GREATER_THAN -> o.getAmount() > orderFilterDTO.getAmount();
@@ -82,7 +79,7 @@ public class OrderResource implements OrderAPI {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getOrders() {
-        return Response.ok(orders.values().stream()
+        return Response.ok(orderService.findAll().stream()
                 .map(OrderMapper::toDTO)
                 .toList()).build();
     }
@@ -91,10 +88,9 @@ public class OrderResource implements OrderAPI {
     @Path("/{orderId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getOrder(@PathParam("orderId") UUID orderId) {
-        if (orders.containsKey(orderId)) {
-            return Response.ok(orders.get(orderId)).build();
-        }
-        return Response.status(Response.Status.NOT_FOUND)
-                .entity("Es existiert keine OrderDTO mit der orderId " + orderId).build();
+        return orderService.findById(orderId)
+                .map(entity -> Response.ok(OrderMapper.toDTO(entity)).build())
+                .orElse(Response.status(Response.Status.NOT_FOUND)
+                        .entity("Es existiert keine OrderDTO mit der orderId " + orderId).build());
     }
 }

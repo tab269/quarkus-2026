@@ -1,4 +1,6 @@
-package org.acme;
+package org.acme.boundary;
+
+import org.acme.domain.model.OrderEntity;
 
 public class OrderMapper {
 

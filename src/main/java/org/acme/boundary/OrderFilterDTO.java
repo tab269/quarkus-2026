@@ -1,4 +1,4 @@
-package org.acme;
+package org.acme.boundary;
 
 public class OrderFilterDTO {
     private int amount;

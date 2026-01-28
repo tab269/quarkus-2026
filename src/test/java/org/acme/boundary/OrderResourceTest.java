@@ -1,22 +1,37 @@
-package org.acme;
+package org.acme.boundary;
 
 import jakarta.ws.rs.core.Response;
+import org.acme.domain.service.OrderService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 import java.net.URI;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mockStatic;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 class OrderResourceTest {
 
-    private OrderResource cut = new OrderResource(); // class under test
+    private OrderResource cut; // class under test
+
+    OrderService orderService;
+
+
+    @BeforeEach
+    public void setUp() {
+        orderService = Mockito.mock(OrderService.class);
+        cut = new OrderResource(orderService);
+    }
 
     @Test
     void erzeugeOrder_addOrderToMap() {
+        when(orderService.findById(any())).thenReturn(Optional.empty());
+
         // arrange
         UUID orderIdExpected = UUID.fromString("92f679e6-c082-442c-ab66-6d938b1a66c1");
         try (MockedStatic<UUID> mocked = mockStatic(UUID.class)) {
@@ -33,7 +48,8 @@ class OrderResourceTest {
                 assertEquals(expectedLocation, location);
                 System.out.println("expectedLocation = " + expectedLocation);
 
-                assertTrue(OrderResource.orders.containsKey(orderIdExpected));
+//                assertTrue(orderService.findById(orderIdExpected).isEmpty());
+                verify(orderService).save(any());
             }
         }
     }

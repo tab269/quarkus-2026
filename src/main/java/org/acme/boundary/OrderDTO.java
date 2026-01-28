@@ -1,6 +1,7 @@
-package org.acme;
+package org.acme.boundary;
 
 import jakarta.validation.constraints.*;
+import org.acme.common.Alphabetic;
 
 import java.util.UUID;
 
