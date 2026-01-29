@@ -1,5 +1,6 @@
 package org.acme.boundary;
 
+import io.smallrye.mutiny.Uni;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
@@ -40,7 +41,7 @@ public interface OrderAPI {
                     )
             )
     )
-    Response erzeugeOrder(@Valid
+    Uni<Response> erzeugeOrder(@Valid
                           @RequestBody(
                                   content = @Content(
                                           mediaType = "application/json",

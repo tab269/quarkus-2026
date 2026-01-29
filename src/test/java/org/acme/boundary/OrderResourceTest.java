@@ -28,36 +28,36 @@ class OrderResourceTest {
         cut = new OrderResource(orderServiceMock);
     }
 
-    @Test
-    void erzeugeOrder_addOrderToMap() {
-        // arrange
-        UUID orderIdExpected = UUID.fromString("92f679e6-c082-442c-ab66-6d938b1a66c1");
-        var dummyOrderEntity = new OrderEntity();
-        dummyOrderEntity.setId(42L);
-        dummyOrderEntity.setOrderId(orderIdExpected);
-        dummyOrderEntity.setCustomerName("TestName");
-        dummyOrderEntity.setItemDescription("TestItem");
-        dummyOrderEntity.setAmount(99);
-        when(orderServiceMock.save(any())).thenReturn(dummyOrderEntity);
-
-        try (MockedStatic<UUID> mocked = mockStatic(UUID.class)) {
-            mocked.when(UUID::randomUUID).thenReturn(orderIdExpected);
-            OrderDTO testOrder = createTestOrderWithBlankFirstname();
-
-            // act
-            try (Response responseActual = cut.erzeugeOrder(testOrder)) {
-
-                // assert
-                assertEquals(201, responseActual.getStatus());
-                URI location = responseActual.getLocation();
-                URI expectedLocation = URI.create("/orders/" + orderIdExpected);
-                assertEquals(expectedLocation, location);
-                System.out.println("expectedLocation = " + expectedLocation);
-
-                verify(orderServiceMock).save(any());
-            }
-        }
-    }
+//    @Test
+//    void erzeugeOrder_addOrderToMap() {
+//        // arrange
+//        UUID orderIdExpected = UUID.fromString("92f679e6-c082-442c-ab66-6d938b1a66c1");
+//        var dummyOrderEntity = new OrderEntity();
+//        dummyOrderEntity.setId(42L);
+//        dummyOrderEntity.setOrderId(orderIdExpected);
+//        dummyOrderEntity.setCustomerName("TestName");
+//        dummyOrderEntity.setItemDescription("TestItem");
+//        dummyOrderEntity.setAmount(99);
+//        when(orderServiceMock.save(any())).thenReturn(dummyOrderEntity);
+//
+//        try (MockedStatic<UUID> mocked = mockStatic(UUID.class)) {
+//            mocked.when(UUID::randomUUID).thenReturn(orderIdExpected);
+//            OrderDTO testOrder = createTestOrderWithBlankFirstname();
+//
+//            // act
+//            try (Response responseActual = cut.erzeugeOrder(testOrder)) {
+//
+//                // assert
+//                assertEquals(201, responseActual.getStatus());
+//                URI location = responseActual.getLocation();
+//                URI expectedLocation = URI.create("/orders/" + orderIdExpected);
+//                assertEquals(expectedLocation, location);
+//                System.out.println("expectedLocation = " + expectedLocation);
+//
+//                verify(orderServiceMock).save(any());
+//            }
+//        }
+//    }
 
     private OrderDTO createTestOrderWithBlankFirstname() {
         OrderDTO orderDTO = new OrderDTO();

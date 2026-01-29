@@ -2,7 +2,13 @@ package org.acme.boundary;
 
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.response.Response;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.MediaType;
+import org.acme.domain.model.OrderEntity;
+import org.acme.persistence.OrdersRepository;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -16,16 +22,23 @@ import static org.hamcrest.Matchers.nullValue;
 @QuarkusTest
 class OrderResourceIT {
 
-//    @Inject
-//    OrderService orderService;
-//
-//    @BeforeEach
-//    void resetDb() {
-//        orderService.clearAll();
-//    }
+    @Inject
+    OrdersRepository ordersRepository;
 
-    // FIXME: wir resetten aktuell vor jedem Test die Datenbank nicht
-    @Disabled
+    @BeforeEach
+    @Transactional
+    void setupDb() {
+            OrderEntity orderEntity = new OrderEntity(
+                    UUID.randomUUID(), "Carola", null, 0);
+            ordersRepository.persist(orderEntity);
+    }
+
+    @AfterEach
+    @Transactional
+    void cleanDb() {
+        ordersRepository.deleteAll();
+    }
+
     @Test
     void testGetOnOrdersEndpoint_shouldReturnTestdata() {
         given()

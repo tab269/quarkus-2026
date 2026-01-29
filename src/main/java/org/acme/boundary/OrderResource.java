@@ -1,5 +1,6 @@
 package org.acme.boundary;
 
+import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -23,29 +24,23 @@ public class OrderResource implements OrderAPI {
         this.orderService = orderService;
     }
 
-    // public Response erzeugeOrder(@Valid OrderDTO orderDTO, @Context UriInfo uriInfo) {
-    public Response erzeugeOrder(@Valid OrderDTO orderDTO) {
-        // Alternative Möglichkeit zur Valid-Annotation am Parameter,
-        // um z.B. Fehlermeldungen zu loggen aber NICHT via REST zu responden (security)
-        // Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-        // Set<ConstraintViolation<OrderDTO>> validationResult = validator.validate(orderDTO);
-        // validationResult.forEach(violation -> {
-        //     violation.getPropertyPath().forEach(propertyPath -> {
-        //         ...
-        //     });
-        // });
+    public Uni<Response> erzeugeOrder(@Valid OrderDTO orderDTO) {
         if (orderDTO.customerFirstname == null || orderDTO.customerFirstname.isBlank()) {
             orderDTO.customerFirstname = null;
         }
         OrderEntity orderEntity = OrderMapper.toEntity(orderDTO);
-        OrderEntity orderEntityPersisted = orderService.save(orderEntity);
-        OrderDTO orderDTOResult = OrderMapper.toDTO(orderEntityPersisted);
-        URI location = UriBuilder
-                .fromResource(OrderResource.class)
-                .path(orderDTOResult.getOrderId().toString())
-                .build();
+        /* bis hier läuft alles noch im Event-Loop-Thread: ist OK, weil kurz CPU-only */
 
-        return Response.created(location).build();
+        return orderService.save(orderEntity)
+                .onItem()
+                .transform(
+                    persistedEntity -> {
+                        URI location = UriBuilder
+                            .fromResource(OrderResource.class)
+                            .path(persistedEntity.getOrderId().toString())
+                            .build();
+                        return Response.created(location).build();
+                    });
     }
 
     @GET
@@ -78,7 +73,19 @@ public class OrderResource implements OrderAPI {
     public Response getOrders() {
         return Response.ok(orderService.findAll().stream()
                 .map(OrderMapper::toDTO)
-                .toList()).build();
+                .toList()).build();    }
+
+    @GET
+    @Path("/nonblocking")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Uni<Response> getOrdersNonBlocking() {
+//        return orderService.findAllReactive()
+//                .map(orderEntities -> Response.ok(orderEntities.stream()
+//                        .map(OrderMapper::toDTO)).build());
+                return orderService.findAllReactive()
+                        .onItem()
+                        .transform(orderEntities -> Response.ok(orderEntities.stream()
+                                .map(OrderMapper::toDTO).toList()).build());
     }
 
     @GET
