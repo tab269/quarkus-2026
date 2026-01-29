@@ -16,24 +16,16 @@ import java.util.UUID;
 @Path("/orders")
 public class OrderResource implements OrderAPI {
 
-    OrderService orderService;
+    private OrderService orderService;
+    private OrderEventPublisher orderEventPublisher;
 
     @Inject
-    public OrderResource(OrderService orderService) {
+    public OrderResource(OrderService orderService, OrderEventPublisher orderEventPublisher) {
         this.orderService = orderService;
+        this.orderEventPublisher = orderEventPublisher;
     }
 
-    // public Response erzeugeOrder(@Valid OrderDTO orderDTO, @Context UriInfo uriInfo) {
     public Response erzeugeOrder(@Valid OrderDTO orderDTO) {
-        // Alternative Möglichkeit zur Valid-Annotation am Parameter,
-        // um z.B. Fehlermeldungen zu loggen aber NICHT via REST zu responden (security)
-        // Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-        // Set<ConstraintViolation<OrderDTO>> validationResult = validator.validate(orderDTO);
-        // validationResult.forEach(violation -> {
-        //     violation.getPropertyPath().forEach(propertyPath -> {
-        //         ...
-        //     });
-        // });
         if (orderDTO.customerFirstname == null || orderDTO.customerFirstname.isBlank()) {
             orderDTO.customerFirstname = null;
         }
@@ -44,6 +36,8 @@ public class OrderResource implements OrderAPI {
                 .fromResource(OrderResource.class)
                 .path(orderDTOResult.getOrderId().toString())
                 .build();
+
+        orderEventPublisher.publish(new OrderCreatedEvent(orderDTOResult));
 
         return Response.created(location).build();
     }

@@ -20,12 +20,14 @@ class OrderResourceTest {
     private OrderResource cut; // class under test
 
     OrderService orderServiceMock;
+    OrderEventPublisher orderEventPublisherMock;
 
 
     @BeforeEach
     public void setUp() {
         orderServiceMock = Mockito.mock(OrderService.class);
-        cut = new OrderResource(orderServiceMock);
+        orderEventPublisherMock = Mockito.mock(OrderEventPublisher.class);
+        cut = new OrderResource(orderServiceMock, orderEventPublisherMock);
     }
 
     @Test
