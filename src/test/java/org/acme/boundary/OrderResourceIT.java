@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
+import static org.acme.security.jwt.GenerateTestTokens.createUserAdminToken;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.nullValue;
@@ -72,6 +73,7 @@ class OrderResourceIT {
                 .header("Location", notNullValue());
 
         given()
+                .header("Authorization", "Bearer " + createUserAdminToken())
                 .when().get("/orders")
                 .then()
                 .statusCode(200)
@@ -79,22 +81,21 @@ class OrderResourceIT {
     }
 
     private OrderDTO createTestOrderWithBlankFirstname() {
-        OrderDTO orderDTO = new OrderDTO();
-        orderDTO.orderId = UUID.randomUUID();
-        orderDTO.customerFirstname = "  ";
-        orderDTO.customerLastname = "Müller";
-        orderDTO.itemDescription = "Fussball";
-        orderDTO.amount = 72;
-        return orderDTO;
+        return OrderDTO.builder()
+            .orderId(UUID.randomUUID())
+            .customerFirstname("  ")
+            .customerLastname("Müller")
+            .itemDescription("Fussball")
+            .amount(72).build();
     }
 
     private OrderDTO createOneTestOrder() {
-        OrderDTO orderDTO = new OrderDTO();
-        orderDTO.orderId = UUID.randomUUID();
-        orderDTO.customerFirstname = "Thomas";
-        orderDTO.customerLastname = "Müller";
-        orderDTO.itemDescription = "Fussball";
-        orderDTO.amount = 72;
-        return orderDTO;
+        return OrderDTO.builder()
+            .orderId(UUID.randomUUID())
+            .customerFirstname("Thomas")
+            .customerLastname("Müller")
+            .itemDescription("Fussball")
+            .amount(72)
+            .build();
     }
 }

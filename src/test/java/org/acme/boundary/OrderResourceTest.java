@@ -62,11 +62,11 @@ class OrderResourceTest {
     }
 
     private OrderDTO createTestOrderWithBlankFirstname() {
-        OrderDTO orderDTO = new OrderDTO();
-        orderDTO.customerFirstname = "  ";
-        orderDTO.customerLastname = "Müller";
-        orderDTO.itemDescription = "Fussball";
-        orderDTO.amount = 72;
-        return orderDTO;
+        return OrderDTO.builder()
+                .customerFirstname("  ")
+                .customerLastname("Müller")
+                .itemDescription("Fussball")
+                .amount(72)
+                .build();
     }
 }

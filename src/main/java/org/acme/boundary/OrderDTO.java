@@ -1,10 +1,17 @@
 package org.acme.boundary;
 
 import jakarta.validation.constraints.*;
+import lombok.*;
 import org.acme.common.Alphabetic;
 
 import java.util.UUID;
 
+@Getter
+@Setter
+@ToString
+@Builder()
+@NoArgsConstructor
+@AllArgsConstructor
 public class OrderDTO {
 
     public UUID orderId;
@@ -26,44 +33,4 @@ public class OrderDTO {
     @Min(1)
     @Max(100)
     public int amount;
-
-    public UUID getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(UUID orderId) {
-        this.orderId = orderId;
-    }
-
-    public String getCustomerLastname() {
-        return customerLastname;
-    }
-
-    public void setCustomerLastname(String customerLastname) {
-        this.customerLastname = customerLastname;
-    }
-
-    public String getCustomerFirstname() {
-        return customerFirstname;
-    }
-
-    public void setCustomerFirstname(String customerFirstname) {
-        this.customerFirstname = customerFirstname;
-    }
-
-    public String getItemDescription() {
-        return itemDescription;
-    }
-
-    public void setItemDescription(String itemDescription) {
-        this.itemDescription = itemDescription;
-    }
-
-    public int getAmount() {
-        return amount;
-    }
-
-    public void setAmount(int amount) {
-        this.amount = amount;
-    }
 }

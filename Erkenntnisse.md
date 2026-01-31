@@ -1,4 +1,4 @@
-# Infos und Erkenntnisse
+# Infos, Erkenntnisse und Ergebnisse
 ## Montag
 ### Projekt erstellen
 ```
@@ -22,3 +22,36 @@ mvn io.quarkus:quarkus-maven-plugin:create \
 ### Zalando RESTful API Guidelines
 [https://opensource.zalando.com/restful-api-guidelines/](https://opensource.zalando.com/restful-api-guidelines/)
 
+## Donnerstag + Freitag
+### Reaktives Programmieren
+- siehe Branch/Tag */reactive
+- optimiert bzgl. Reaktivität innerhalb der JVM (verringert das Warten von Threads auf Ergebnisse)
+- reactive-Variante der Extension verwenden
+- Uni<T>- oder Multi<T>-Datentyp als Container für Ergebnis in der Zukunft verwenden
+
+### Messaging
+- entkoppelt Microservices und optimiert damit prozessübergreifend bzgl.
+  - der Reaktivität und
+  - der Nichtverfügbarkeit von Kommunikationspartnern
+  des Gesamtsystems via fire-and-forget-Mechanismus
+- funktioniert leider nicht, da wir den Embedded Artemis-Server (AMQP-Broker) nicht zum Laufen bekommen haben
+
+### Security
+- SmallRye-JWT-Extension
+- Mit `GenerateTestTokens` (im `src/test/java/`-Ordner) können Test-Tokens ausgestellt werden, die kopiert und manuell
+  via _Authenticate_-Button auf der Swagger-UI angegeben werden können. Damit kann man sich für die REST-Endpunkte
+  authorisieren lassen (oder eben nicht, wenn die entsprechende Rolle im Token fehlt).
+
+### Health
+- SmallRye-Health-Extension
+- siehe `SimpleHealthCheck`
+
+### Mit CDI-Events auf Events zum Hochfahren- und Herunterfahren der App reagieren
+- siehe `AppLifecycleHandler`
+
+### Lombok
+- Boilerplate-Code in DTOs minimieren
+- sparsam verwenden (ggf. Java-Records verwenden)
+- problematisch in JPA-Entity-Klassen
+- Maven-Dependency hinzufügen
+- Annotation-Processing im Maven-Compiler-Plugin konfigurieren
