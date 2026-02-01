@@ -14,13 +14,13 @@ mvn io.quarkus:quarkus-maven-plugin:create \
 `./mvnw quarkus:dev`
 
 ### Musterlösungen (Github)
-[https://github.com/tab269/quarkus-2026](https://github.com/tab269/quarkus-2026)
+[github.com/tab269/quarkus-2026](https://github.com/tab269/quarkus-2026)
 
 ### OpenAPI (inkl. Swagger-UI) hinzugügen
 `./mvnw quarkus:add-extension -Dextensions="io.quarkus:quarkus-smallrye-openapi"`
 
 ### Zalando RESTful API Guidelines
-[https://opensource.zalando.com/restful-api-guidelines/](https://opensource.zalando.com/restful-api-guidelines/)
+[opensource.zalando.com/restful-api-guidelines/](https://opensource.zalando.com/restful-api-guidelines/)
 
 ## Donnerstag + Freitag
 ### Reaktives Programmieren
@@ -61,3 +61,7 @@ mvn io.quarkus:quarkus-maven-plugin:create \
 - problematisch in JPA-Entity-Klassen
 - Maven-Dependency hinzufügen
 - Annotation-Processing im Maven-Compiler-Plugin konfigurieren
+
+### The Twelve-Factor App
+- bewährte Leitlinien beim Entwickeln von Anwendungen im Zeitalter von _Software-as-a-Service_
+- [12factor.net/](https://12factor.net/)
