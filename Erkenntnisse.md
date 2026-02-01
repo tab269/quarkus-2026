@@ -37,7 +37,8 @@ mvn io.quarkus:quarkus-maven-plugin:create \
 - funktioniert leider nicht, da wir den Embedded Artemis-Server (AMQP-Broker) nicht zum Laufen bekommen haben
 - **Literatur**
   - [MicroProfile Reactive Messaging specification 3.0](https://microprofile.io/specifications/reactive-messaging/3-0/)
-  - Quarkus-Guide [Quarkus Messaging Extensions](https://quarkus.io/guides/messaging)
+  - Quarkus-Guide: [Quarkus Messaging Extensions](https://quarkus.io/guides/messaging)
+  - [Apache Artemis™](https://artemis.apache.org/components/artemis/documentation/latest/)
 
 ### Security
 - SmallRye-JWT-Extension
