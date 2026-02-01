@@ -35,12 +35,15 @@ mvn io.quarkus:quarkus-maven-plugin:create \
   - der Nichtverfügbarkeit von Kommunikationspartnern
   des Gesamtsystems via fire-and-forget-Mechanismus
 - funktioniert leider nicht, da wir den Embedded Artemis-Server (AMQP-Broker) nicht zum Laufen bekommen haben
+- **Literatur**
+  - [MicroProfile Reactive Messaging specification 3.0](https://microprofile.io/specifications/reactive-messaging/3-0/)
+  - Quarkus-Guide [Quarkus Messaging Extensions](https://quarkus.io/guides/messaging)
 
 ### Security
 - SmallRye-JWT-Extension
 - Mit `GenerateTestTokens` (im `src/test/java/`-Ordner) können Test-Tokens ausgestellt werden, die kopiert und manuell via _Authenticate_-Button auf der Swagger-UI angegeben werden können. Damit kann man sich für die REST-Endpunkte authorisieren lassen (oder eben nicht, wenn die entsprechende Rolle im Token fehlt).
 - **Literatur**
-  - Quarkus-Guide zu Role-Based Access Control (RBAC) mit JWT. [Using JWT RBAC](https://quarkus.io/guides/security-jwt)
+  - Quarkus-Guide zu Role-Based Access Control (RBAC) mit JWT: [Using JWT RBAC](https://quarkus.io/guides/security-jwt)
   - Jones, M., Bradley, J., & Sakimura, N. (2015). RFC 7519: JSON Web Token (JWT). RFC Editor. [https://www.rfc-editor.org/info/rfc7519](https://www.rfc-editor.org/info/rfc7519)
   - [MicroProfile JWT 2.1](https://microprofile.io/specifications/jwt/2-1/)
 
